@@ -1,11 +1,16 @@
 from flask import Flask, request, jsonify
 import google.generativeai as genai
 import pandas as pd
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 
 # Configurar la API de Gemini
-genai.configure(api_key='APIKEY')  # Reemplaza "YOUR_API_KEY" con tu clave API real
+API_KEY = os.getenv('APIKEY')
+genai.configure(api_key=API_KEY)  # Reemplaza "YOUR_API_KEY" con tu clave API real AIzaSyC1v4t0KfsBDz15hpmWL0CJ12nQhaBIMSs
 
 # Seleccionar el modelo
 model = genai.GenerativeModel('gemini-1.5-flash')
@@ -56,7 +61,7 @@ palabras_clave = ["traje","disponible","tiene","tienes","T-Shirt",
 "Special Edition"
 "PSG (Paris Saint-Germain)",
 "NBA",
-"MLB", 'nike']
+"MLB"]
 
 
 prompt_inicial = '''
