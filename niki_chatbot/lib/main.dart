@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:http/http.dart' as http;
 import 'secret.dart' as secret;
-import 'dart:convert';
-import 'dart:io';
-import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -196,20 +192,26 @@ class _ChatScreenState extends State<ChatScreen> {
     List<Part> parts = [];
 
     try {
-      String url = 'https://localhost:5000';
-      Map map = {
-        'data': {'pregunta': message},
-      };
-      var response = await apiRequest(url, map);
-      setState(() {
+      var response = _chat.sendMessageStream(
+        Content.text(message),
+      );
+      await for(var item in response){
+        var text = item.text;
+        if (text == null) {
+          _showError('No response from API.');
+          return;
+        } else {
+          setState(() {
             _loading = false;
-            parts.add(TextPart(response));
+            parts.add(TextPart(text));
             if((history.length - 1) == historyIndex){
               history.removeAt(historyIndex);
             }
             history.insert(historyIndex, Content('model', parts));
 
           });
+        }
+      }
 
 
     } catch (e, t) {
@@ -258,18 +260,4 @@ class MyColors {
   static const Color primaryColor = Colors.blue;
   static const Color secondaryColor = Colors.green;
   static const Color accentColor = Colors.orange;
-}
-
-
-
-Future<String> apiRequest(String url, Map jsonMap) async {
-  HttpClient httpClient = new HttpClient();
-  HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
-  request.headers.set('content-type', 'application/json');
-  request.add(utf8.encode(json.encode(jsonMap)));
-  HttpClientResponse response = await request.close();
-  // todo - you should check the response.statusCode
-  String reply = await response.transform(utf8.decoder).join();
-  httpClient.close();
-  return reply;
 }
