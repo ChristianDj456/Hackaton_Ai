@@ -31,7 +31,7 @@ palabras_clave = ["traje","disponible","tiene","tienes","T-Shirt","Jersey","Pant
 "Nike", "precio", "disponibilidad", "descripción", "tallas", "colores", "opiniones", "calificación", "sizes", "color","Dri-FIT",
 "Cotton","Polyester","Spandex","Waterproof","Breathable","Soccer","Basketball","Running","Training","Yoga","Golf","Long-Sleeve","Short-Sleeve",
 "High-Waist","Low-Waist","Fitted","Loose","Lightweight","Reflective", "Sportswear","Pro","Air","Max","Academy","Club","Limited Edition",
-"Special Edition","PSG (Paris Saint-Germain)","NBA","MLB"]
+"Special Edition","PSG (Paris Saint-Germain)","NBA","MLB","fecha"]
 
 
 prompt_inicial = '''
