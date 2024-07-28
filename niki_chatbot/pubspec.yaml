@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_generative_ai: ^0.4.3
   flutter_gemini: ^2.0.4
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

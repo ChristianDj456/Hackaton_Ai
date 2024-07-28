@@ -44,3 +44,4 @@ app.*.map.json
 
 # sercret
 /lib/secret.dart
+path
