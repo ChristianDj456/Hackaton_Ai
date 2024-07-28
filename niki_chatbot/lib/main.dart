@@ -5,6 +5,7 @@ import 'secret.dart' as secret;
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
+import 'dart:developer';
 
 void main() {
   runApp(const MyApp());
@@ -196,11 +197,13 @@ class _ChatScreenState extends State<ChatScreen> {
     List<Part> parts = [];
 
     try {
-      String url = 'https://localhost:5000';
+      String url = 'http://127.0.0.1:5000/preguntar';
       Map map = {
         'data': {'pregunta': message},
       };
+      log(map.toString());
       var response = await apiRequest(url, map);
+      log(response);
       setState(() {
             _loading = false;
             parts.add(TextPart(response));
