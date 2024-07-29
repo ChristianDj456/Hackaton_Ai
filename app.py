@@ -78,4 +78,4 @@ def preguntar():
         return jsonify({"respuesta": "Lo siento, solo puedo responder preguntas relacionadas con los productos de la empresa."})
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(port=8000)

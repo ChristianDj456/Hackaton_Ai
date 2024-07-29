@@ -197,22 +197,27 @@ class _ChatScreenState extends State<ChatScreen> {
     List<Part> parts = [];
 
     try {
-      String url = 'http://127.0.0.1:5000/preguntar';
-      Map map = {
-        'data': {'pregunta': message},
-      };
-      log(map.toString());
-      var response = await apiRequest(url, map);
-      log(response);
-      setState(() {
+      var response = await preguntar(message);
+      log(response.toString());
+      if (response.statusCode == 200) {
+
+        setState(() {
             _loading = false;
-            parts.add(TextPart(response));
+            parts.add(TextPart(jsonDecode(response.body)['respuesta']));
             if((history.length - 1) == historyIndex){
               history.removeAt(historyIndex);
             }
             history.insert(historyIndex, Content('model', parts));
 
           });
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load album');
+  }
+      
 
 
     } catch (e, t) {
@@ -265,14 +270,14 @@ class MyColors {
 
 
 
-Future<String> apiRequest(String url, Map jsonMap) async {
-  HttpClient httpClient = new HttpClient();
-  HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
-  request.headers.set('content-type', 'application/json');
-  request.add(utf8.encode(json.encode(jsonMap)));
-  HttpClientResponse response = await request.close();
-  // todo - you should check the response.statusCode
-  String reply = await response.transform(utf8.decoder).join();
-  httpClient.close();
-  return reply;
+Future<http.Response> preguntar(String message) {
+  return http.post(
+    Uri.parse('http://10.0.2.2:8000/preguntar'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'pregunta': message,
+    }),
+  );
 }
