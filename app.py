@@ -16,57 +16,27 @@ genai.configure(api_key=API_KEY)  # Reemplaza "YOUR_API_KEY" con tu clave API re
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Cargar y preprocesar los datos
-file_path = 'sport_clothing_sales_data_with_discounts.csv'
+file_path = 'sport_clothing_sales_data.csv'
 data = pd.read_csv(file_path)
-data = data[['name', 'sub_title', 'description', 'price', 'availability', 'available_sizes', 'color', 'quantity', 'classify', 'discount', 'final_price']]
-data['text'] = data.apply(lambda row: f"Producto: {row['name']}\nSubtítulo: {row['sub_title']}\nDescripción: {row['description']}\nPrecio: {row['price']}\nDisponibilidad: {row['availability']}\nTallas: {row['available_sizes']}\n Colores: {row['color']}\n Cantidad: {row['quantity']}\n Tipo: {row['classify']}\n Ofertas: {row['discount']}\n Precio Final: {row['final_price']}", axis=1)
+data = data[['name', 'sub_title', 'description', 'price', 'availability', 'available_sizes', 'color', 'quantity', 'classify', 'discount', 'final_price', 'scraped_at']]
+data['text'] = data.apply(lambda row: f"Producto: {row['name']}\nSubtítulo: {row['sub_title']}\nDescripción: {row['description']}\nPrecio: {row['price']}\nDisponibilidad: {row['availability']}\nTallas: {row['available_sizes']}\n Colores: {row['color']}\n Cantidad: {row['quantity']}\n Tipo: {row['classify']}\n Ofertas: {row['discount']}\n Precio Final: {row['final_price']}\n Fecha: {row['scraped_at']}", axis=1)
 corpus = "\n\n".join(data['text'].tolist())
 
 # Definir palabras clave relevantes
 
 
 
-palabras_clave = ["traje","disponible","tiene","tienes","T-Shirt",
-"Jersey",
-"Pants",
-"Tights",
-"Overalls",
-"Jacket",
-"Dress",
-"Shorts",
-"Hoodie",
-"Cap","la","camisillas","calcetas","gorra","calcetin","camisetas","vermudas","calzado","medias","zapatos","pantalón","camisa","el", "producto", "Nike", "precio", "disponibilidad", "descripción", "tallas", "colores", "opiniones", "calificación", "sizes", "color","Dri-FIT",
-"Cotton",
-"Polyester",
-"Spandex",
-"Waterproof",
-"Breathable","Soccer",
-"Basketball",
-"Running",
-"Training",
-"Yoga",
-"Golf","Long-Sleeve",
-"Short-Sleeve",
-"High-Waist",
-"Low-Waist",
-"Fitted",
-"Loose",
-"Lightweight",
-"Reflective", "Sportswear",
-"Pro",
-"Air",
-"Max",
-"Academy",
-"Club","Limited Edition",
-"Special Edition"
-"PSG (Paris Saint-Germain)",
-"NBA",
-"MLB"]
+palabras_clave = ["traje","disponible","tiene","tienes","T-Shirt","Jersey","Pants","Tights","Overalls","Jacket","Dress","Shorts","Hoodie",
+"Cap","la","camisillas","calcetas","gorra","calcetin","camisetas","vermudas","calzado","medias","zapatos","pantalón","camisa","el", "producto",
+"Nike", "precio", "disponibilidad", "descripción", "tallas", "colores", "opiniones", "calificación", "sizes", "color","Dri-FIT",
+"Cotton","Polyester","Spandex","Waterproof","Breathable","Soccer","Basketball","Running","Training","Yoga","Golf","Long-Sleeve","Short-Sleeve",
+"High-Waist","Low-Waist","Fitted","Loose","Lightweight","Reflective", "Sportswear","Pro","Air","Max","Academy","Club","Limited Edition",
+"Special Edition","PSG (Paris Saint-Germain)","NBA","MLB","fecha"]
 
 
 prompt_inicial = '''
-Tu nombre es "Niki Chatbot", trabajas para la empresa de ropa deportiva "Sporty". Tu cargo consiste en brindar apoyo a nuestros empleados sobre el almacenamiento y inventario actual, por ende tus respuestas hacia ellos deben de ser formales y precisas
-solamente puedes responder preguntas que esten relacionadas a la informacion dentro de tu base de datos. a continuacion se brindan ejemplos de posibles preguntas.
+Tu nombre es Niki Chatbot y eres un chatbot que trabaja para la empresa de ropa deportiva "Sporty".Y fuiste creado por estudiantes de la Universidad del Norte
+Eres un chatbot que soloamente respondera preguntas relacionadas con los productos de la empresa que se encuentran en la base de datos. Y solo responderas preguntas relacionadas a las que te pasare a continuacion.
 *Pregunta:* ¿Cuál es el precio del producto "Nike Dri-FIT Team (MLB Minnesota Twins)"?
 
 *Respuesta:* El precio del producto "Nike Dri-FIT Team (MLB Minnesota Twins)" es de $40.00 USD.
@@ -86,14 +56,6 @@ solamente puedes responder preguntas que esten relacionadas a la informacion den
 *Pregunta:* ¿Qué características tiene el producto "Paris Saint-Germain Repel Academy AWF"?
 
 *Respuesta:* El producto "Paris Saint-Germain Repel Academy AWF" ofrece cobertura repelente al agua con detalles de PSG.
-
-*Pregunta:* ¿Qué colores estan disponibles para los productos?
-
-*Respuesta:* Varían segun el producto. Algunos de los colores listados incluyen Navy, Black/Black, Black/White, Black/Rush Pink, Dark Grey/Black/Siren Red. 
-
-*Pregunta:* ¿Hay productos para niños?
-
-*Respuesta:* Si, algunos productos específicos para niños incluyen "Nike Dri-Fit One Luxe Big Kids' (Girls') Printed tights (Extended Size) y "Paris Saint Germain Repel Academy AWF Big Kids' Soccer Jacket.
 '''
 
 response = model.generate_content(prompt_inicial)
